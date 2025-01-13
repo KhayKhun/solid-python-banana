@@ -1,3 +1,7 @@
+SCREEN_W = 200
+SCREEN_H = 200
+
+
 class Circle:
     def __init__(self, radius, x, y):
         self.radius = radius
@@ -12,7 +16,12 @@ class Circle:
         self.y += dy
 
 
+
+
 if __name__ == "__main__":
-    c = Circle(10,100,100)
-    c.move(-20,0)
+    c = Circle(10,100,100)            
     c.draw()
+
+    while c.x < SCREEN_W:
+        c.move(10)
+        c.draw()
