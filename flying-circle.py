@@ -1,5 +1,10 @@
-SCREEN_W = 200
-SCREEN_H = 200
+import time
+SCREEN_W = 100
+SCREEN_H = 100
+running = True
+
+change_x = 10
+change_y = 10
 
 
 class Circle:
@@ -11,17 +16,26 @@ class Circle:
     def draw(self):
         print(f"x:{self.x}, y:{self.y}")
 
-    def move(self, dx = 0, dy = 0):
+    def move(self, dx=0, dy=0):
         self.x += dx
         self.y += dy
 
 
-
-
 if __name__ == "__main__":
-    c = Circle(10,100,100)            
+    c = Circle(10, 60, 0)
     c.draw()
 
-    while c.x < SCREEN_W:
-        c.move(10)
+    while running:
+        if c.x == SCREEN_W:
+            change_x = -10
+        elif c.x == 0:
+            change_x = 10
+
+        if c.y == SCREEN_H:
+            change_y = -10
+        elif c.y == 0:
+            change_y = 10
+
+        c.move(change_x, change_y)
         c.draw()
+        time.sleep(0.3)
