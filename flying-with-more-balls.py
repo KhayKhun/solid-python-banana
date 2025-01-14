@@ -1,7 +1,6 @@
 import pygame
 import sys
-import random
-
+from random import randint
 
 class Circle:
     def __init__(self, color, radius, x, y, vx, vy):
@@ -44,12 +43,12 @@ running = True
 
 # circles init
 circles = [Circle(
-    color=(0, 200, 0),
-    radius=random.randint(5, 10),  # ha
-    x=random.randint(0, WINDOW_WIDTH),
-    y=random.randint(0, WINDOW_HEIGHT),
-    vx=random.randint(3, 20),
-    vy=random.randint(3, 20),
+    color=(randint(0,255), randint(0,255), randint(0,255)),
+    radius=randint(5, 10),  # ha
+    x=randint(0, WINDOW_WIDTH),
+    y=randint(0, WINDOW_HEIGHT),
+    vx=randint(3, 20),
+    vy=randint(3, 20),
     ) for _ in range(10)]
 
 # game run
@@ -62,11 +61,6 @@ while running:
     screen.fill(BG_COLOR)
 
     for c in circles:
-        # print('radius',c.radius)
-        # print('vx',c.vx)
-        # print('vy',c.vy)
-        # print('x',c.x)
-        # print('y',c.y)
         c.move_and_draw()
 
     pygame.display.flip()
