@@ -1,6 +1,13 @@
 import pygame
 import sys
 from random import randint
+import math
+
+
+BG_COLOR = (30, 30, 30)
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+
 
 class Circle:
     def __init__(self, color, radius, x, y, vx, vy):
@@ -27,13 +34,23 @@ class Circle:
     def move_and_draw(self):
         self.move()
         self.draw(screen)
+        self.detect_bounce()
 
+    def detect_bounce(self):
+        other_circles = circles.copy()
+        other_circles.remove(self)
+
+        for oc in other_circles:
+
+            distance = math.sqrt((oc.x - self.x)**2 + (oc.y - self.y)**2)
+            
+            if distance <= oc.radius + self.radius:
+                # Circles are colliding
+                self.vx = -self.vx
+                self.vy = -self.vy
 
 # pygame init
 pygame.init()
-BG_COLOR = (30, 30, 30)
-WINDOW_WIDTH = 500
-WINDOW_HEIGHT = 500
 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Flying circle")
@@ -43,13 +60,16 @@ running = True
 
 # circles init
 circles = [Circle(
-    color=(randint(0,255), randint(0,255), randint(0,255)),
-    radius=randint(5, 10),  # ha
+    color=(randint(0, 255), randint(0, 255), randint(0, 255)),
+    radius=randint(50, 70),  # ha
     x=randint(0, WINDOW_WIDTH),
     y=randint(0, WINDOW_HEIGHT),
     vx=randint(3, 20),
     vy=randint(3, 20),
-    ) for _ in range(10)]
+) for _ in range(2)]
+
+circles[0].detect_bounce()
+
 
 # game run
 while running:
@@ -64,7 +84,7 @@ while running:
         c.move_and_draw()
 
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(10)
 
 # Clean up
 pygame.quit()
