@@ -7,19 +7,20 @@ PORT = 21002
 clients = []  # List to keep track of connected clients
 
 class Client:
-    def __init__(self, socket, username):
+    def __init__(self, username, socket, address):
         self.socket = socket
         self.username = username
+        self.address = address
 
-def handle_client(conn, addr):
-    print(f"Client connected: {addr}")
-    conn.send("Welcome to the chat server! Type 'exit' to leave.\n".encode())
+def handle_client(client): # Client type
+    print(f"Client connected: {client.address}")
+    client.socket.send("Welcome to the chat server! Type 'exit' to leave.\n".encode())
     
     while True:
         try:
             message_received = ""
             while True:
-                data = conn.recv(32)
+                data = client.socket.recv(32)
                 if data:
                     message_received += data.decode()
                     if message_received.endswith("\n"):
@@ -29,27 +30,29 @@ def handle_client(conn, addr):
                     break
 
             if message_received.strip().lower() == "exit":
-                print(f"Client {addr} disconnected.")
-                conn.send("Goodbye!\n".encode())
+                print(f"Client {client.address} disconnected.")
+                client.socket.send("Goodbye!\n".encode())
                 break
             
-            broadcast(f"Client {addr}: {message_received}", conn)
+            broadcast(f"Client {client.username.decode()}: {message_received}", client)
         except (ConnectionResetError, BrokenPipeError):
-            print(f"Client {addr} unexpectedly disconnected.")
+            print(f"Client {client.address} unexpectedly disconnected.")
             break
 
     # Remove client from the list and close the connection
-    clients.remove(conn)
-    conn.close()
+    clients.remove(client)
+    client.socket.close()
 
 
-def broadcast(message, sender_conn=None):
+def broadcast(message, sender=None):
     for client in clients:
         # print(type(client)) # socket.socket
-        if client != sender_conn:  # Don't send the message to the sender
+        print(client == sender)
+        if client != sender:  # Don't send the message to the sender
             try:
-                client.send(f"{message}\n".encode())
+                client.socket.send(f"{message}\n".encode())
             except:
+                print("Error in broadcasting.")
                 pass  # Ignore errors when sending to a disconnected client
 
 
@@ -61,8 +64,12 @@ def start_server():
 
         while True: # accpet-clients
             conn, addr = server_socket.accept()
-            clients.append(conn)
-            thread = threading.Thread(target=handle_client, args=(conn, addr))
+            username = conn.recv(1024) # receive username from client
+            new_client = Client(username=username, socket=conn, address=addr)
+            print(new_client.username, new_client.address)
+
+            clients.append(new_client)
+            thread = threading.Thread(target=handle_client, args=(new_client,))
             thread.start()
 
 

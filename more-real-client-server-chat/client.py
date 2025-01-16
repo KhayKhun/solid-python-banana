@@ -29,9 +29,16 @@ def receive_messages(sock):
 
 def start_client():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+        valid_name = False
         client_socket.connect((HOST, PORT))
         print("Connected to the chat server.")
-        
+        while not valid_name:
+            n = input("Enter your username: ").strip()
+            if n:
+                break
+
+        client_socket.send(n.encode()) # send username to server
+
         thread = threading.Thread(target=receive_messages, args=(client_socket,))
         thread.start()
 
