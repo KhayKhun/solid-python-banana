@@ -8,21 +8,30 @@ PORT = 21002
 def receive_messages(sock):
     while True:
         try:
-            message = sock.recv(1024).decode()
-            if not message:
+            message_received = ""
+            while True:
+                data = sock.recv(32)
+                if data:
+                    message_received += data.decode()
+                    if message_received.endswith("\n"):
+                        break
+                else:
+                    break
+
+            if message_received:
+                print(message_received)
+            else:
                 print("Disconnected from the server.")
                 break
-            print(message)
         except:
             print("Connection to server lost.")
             break
-
 
 def start_client():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((HOST, PORT))
         print("Connected to the chat server.")
-
+        
         thread = threading.Thread(target=receive_messages, args=(client_socket,))
         thread.start()
 

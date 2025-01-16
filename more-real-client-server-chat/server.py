@@ -6,6 +6,10 @@ PORT = 21002
 
 clients = []  # List to keep track of connected clients
 
+class Client:
+    def __init__(self, socket, username):
+        self.socket = socket
+        self.username = username
 
 def handle_client(conn, addr):
     print(f"Client connected: {addr}")
@@ -13,13 +17,23 @@ def handle_client(conn, addr):
     
     while True:
         try:
-            message = conn.recv(1024).decode()
-            if message.strip().lower() == "exit":
+            message_received = ""
+            while True:
+                data = conn.recv(32)
+                if data:
+                    message_received += data.decode()
+                    if message_received.endswith("\n"):
+                        break
+                else:
+                    print("Connection lost!")
+                    break
+
+            if message_received.strip().lower() == "exit":
                 print(f"Client {addr} disconnected.")
                 conn.send("Goodbye!\n".encode())
                 break
             
-            broadcast(f"Client {addr}: {message}", conn)
+            broadcast(f"Client {addr}: {message_received}", conn)
         except (ConnectionResetError, BrokenPipeError):
             print(f"Client {addr} unexpectedly disconnected.")
             break
@@ -31,6 +45,7 @@ def handle_client(conn, addr):
 
 def broadcast(message, sender_conn=None):
     for client in clients:
+        # print(type(client)) # socket.socket
         if client != sender_conn:  # Don't send the message to the sender
             try:
                 client.send(f"{message}\n".encode())
@@ -44,7 +59,7 @@ def start_server():
         server_socket.listen()
         print(f"Server started and listening on {HOST}:{PORT}")
 
-        while True:
+        while True: # accpet-clients
             conn, addr = server_socket.accept()
             clients.append(conn)
             thread = threading.Thread(target=handle_client, args=(conn, addr))
