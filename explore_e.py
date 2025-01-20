@@ -64,5 +64,5 @@ if __name__ == "__main__":
 
     print(f"Sequential e: {e_sequential}")
     print(f"Sequential Time: {sequential_time:.6f} sec")
-    print(f"Parallel e: {e_parallel}")
+    print(f"Parallel e: {1 + e_parallel}")
     print(f"Parallel Time: {parallel_time:.6f} sec")
