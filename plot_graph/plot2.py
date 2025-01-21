@@ -1,7 +1,5 @@
 # y = x^2
 import pygame
-import math
-import random
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -20,9 +18,6 @@ screen = pygame.display.set_mode((w, h))
 pygame.display.set_caption("Draw graph")
 
 running = True
-
-def match_coordinate_to_screen(x):
-    return x * 10
 
 while running:
     for event in pygame.event.get():

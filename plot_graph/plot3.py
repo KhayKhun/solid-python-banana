@@ -1,7 +1,5 @@
-# y = sin(x)
 import pygame
 import math
-import random
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -12,23 +10,14 @@ def f(x):
     return math.sin(x)
 
 pygame.init()
+
 w = 600
 h = 600
 
-sample_count = 60
-
 screen = pygame.display.set_mode((w, h))
-pygame.display.set_caption("Draw graph")
+pygame.display.set_caption("Draw sin(x) Graph")
 
 running = True
-
-start_x = -30
-end_x = 30
-y_scale = 600 / 900
-current = start_x
-
-def match_coordinate_to_screen(x):
-    return x * 10
 
 while running:
     for event in pygame.event.get():
@@ -38,30 +27,22 @@ while running:
 
     screen.fill((0, 0, 0))
 
-    # current = start_x
-
     prev_x = None
     prev_y = None
 
-    while current <= end_x:
-        x = current
-        y = f(x)
-        print(x,y)
+    for x in range(w):
+        actual_x = (x / w) * (4 * math.pi) - (2 * math.pi)  # map x from 0-600 to -2π to 2π
+        actual_y = f(actual_x)
 
+        screen_y = h // 2 - int(actual_y * (h // 3))  # scale sin(x) to fit within screen
 
-        screen_x = match_coordinate_to_screen(x + 30)
-        screen_y = int(h - y)
-        print(screen_x, screen_y)
-        
-        if prev_x and prev_y:
-            pygame.draw.line(screen, (255, 255, 255), (screen_x, screen_y), (prev_x, prev_y))
+        screen.set_at((x, screen_y), (255, 255, 255))
 
-        screen.set_at((screen_x, screen_y), (255, 255, 255))
-        current += 1
-        
-        prev_x = screen_x
+        if prev_x:
+            pygame.draw.line(screen, (255, 255, 255), (x, screen_y), (prev_x, prev_y))
+
+        prev_x = x
         prev_y = screen_y
-    
 
     pygame.display.flip()
 
