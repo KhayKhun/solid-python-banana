@@ -25,5 +25,5 @@ ax.set_xlabel("Number")
 ax.set_ylabel("Count")
 ax.set_title("Bar Chart of Value Frequencies")
 
-ax.grid(axis="y") # show gird only in y axis
+ax.grid(axis="y", linestyle='--') # show gird only in y axis
 plt.show()
