@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Plotter</title>
+  </head>
+  <body>
+    <!-- plot -->
+    <h1><strong>Set the interval to plot</strong></h1>
+    <form action="/plot" method="post" style="margin-bottom: 20px">
+      <label for="from_num">From:</label>
+      <input type="number" id="from_num" name="xleft" required />
+
+      <label for="to_num">To:</label>
+      <input type="number" id="to_num" name="xright" required />
+
+      <br /><br />
+
+      <label for="function">Select function:</label>
+      <select name="function" id="function">
+        <option value="sin">sin(x)</option>
+        <option value="cos">cos(x)</option>
+        <option value="x2">x^2</option>
+        <option value="sqrt">sqrt(x)</option>
+      </select>
+
+      <label for="color">Select color:</label>
+      <select name="color" id="color">
+        <option value="blue">Blue</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="orange">Orange</option>
+      </select>
+
+      <br /><br />
+
+      <button type="submit">Plot</button>
+    </form>
+
+    <!-- histogram -->
+    <h1>Enter comma-separated values for a histogram</h1>
+    <form action="/histogram" method="post">
+      <label for="values">Values (comma-separated):</label><br />
+      <textarea id="values" name="values" rows="3" cols="30"></textarea>
+      <br /><br />
+      <button type="submit">Generate Histogram</button>
+    </form>
+
+    <!-- display results -->
+    {% if image_path %}
+    <h2>Plot Result:</h2>
+    <img src="{{ image_path }}" width="400" />
+    {% endif %} {% if hist_path %}
+    <h2>Histogram Result:</h2>
+    <img src="{{ hist_path }}" width="400" />
+    {% endif %}
+  </body>
+</html>
